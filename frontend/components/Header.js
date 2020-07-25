@@ -2,6 +2,21 @@ import React from 'react';
 import Nav from './Nav';
 import styled from 'styled-components';
 import Link from 'next/link';
+import Nprogress from 'nprogress';
+import Router from 'next/router';
+
+Router.onRouteChangeStart = () => {
+    Nprogress.start();
+}
+
+Router.onRouteChangeComplete = () => {
+    Nprogress.done();
+}
+
+Router.onRouteChangeError = () => {
+    Nprogress.done();
+}
+
 
 const Logo = styled.h1`
     font-size: 4rem;
@@ -50,8 +65,8 @@ const Header = () => {
         <StyledHeader>
             <div className="bar">
                 <Logo>
-                    <Link>
-                        <a href="/">Sick Fits</a>
+                    <Link href="/">
+                        <a>Sick Fits</a>
                     </Link>
                 </Logo>
                 <Nav />
