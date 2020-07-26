@@ -9,6 +9,17 @@ const Mutation = {
         }, info);
 
         return item;
+    },
+
+    async updateItem(parent, args, ctx, info) {
+        const {id, ...rest} = args;
+        
+        const item = await ctx.db.mutation.updateItem({
+            data: rest, 
+            where: { id }
+        }, info);
+
+        return item;
     }
 };
 
