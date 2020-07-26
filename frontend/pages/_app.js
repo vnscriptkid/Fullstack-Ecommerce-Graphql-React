@@ -23,8 +23,8 @@ class MyApp extends App {
                 {/* shared states */}
                 <ApolloProvider client={apollo}>
                     <Meta />
-                    <Page {...pageProps}>
-                        <Component />
+                    <Page>
+                        <Component {...pageProps}/>
                     </Page>
                 </ApolloProvider>
             </Container>
