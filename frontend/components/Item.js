@@ -4,6 +4,7 @@ import ItemStyles from './styles/ItemStyles';
 import Title from './styles/Title';
 import PriceTag from './styles/PriceTag';
 import Link from 'next/link';
+import formatMoney from '../lib/formatMoney';
 
 class Item extends Component {
     static propTypes = {
@@ -14,13 +15,13 @@ class Item extends Component {
         const {item} = this.props;
         return (
             <ItemStyles>
-                {item.image && <img href={item.image} alt={item.title}/>}
+                {item.image && <img src={item.image} alt={item.title}/>}
                 <Title>
                     <Link href={{ pathname: '/item', query: { id: item.id } }}>
                         <a>{item.title}</a>
                     </Link>
                 </Title>
-                <PriceTag>{item.price}</PriceTag>
+                <PriceTag>{formatMoney(item.price)}</PriceTag>
                 <div className="buttonList">
                     <Link href={{ pathname: 'update', query: { id: item.id } }}>
                         <a>Edit</a>
