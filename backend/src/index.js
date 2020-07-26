@@ -10,7 +10,7 @@ server.start(
     {
         cors: {
             credentials: true,
-            origin: process.env.PRISMA_ENDPOINT
+            origin: process.env.FRONTEND_URL
         }
     },
     deets => {
