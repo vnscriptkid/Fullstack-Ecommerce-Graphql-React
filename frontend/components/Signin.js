@@ -5,29 +5,25 @@ import Error from './ErrorMessage';
 import { Mutation } from 'react-apollo';
 import { GET_CURRENT_USER } from './CurrentUser';
 
-const SIGN_UP_USER = gql`
-    mutation SIGN_UP_USER (
+const SIGN_IN_USER = gql`
+    mutation SIGN_IN_USER (
         $email: String!,
-        $name: String!
-        $password: String!,
+        $password: String!
     ) {
-        signup(
+        signin(
             email: $email
-            name: $name
             password: $password
         ) {
-            id
-            email
-            name
-            permissions
-        }
+                id,
+                email,
+                name
+            }
     }
 `;
 
-class Signup extends Component {
+class Signin extends Component {
     state = {
-        email: 'thanh@gmail.com',
-        name: 'thanh',
+        email: 'vnscriptkid@gmail.com',
         password: '123456'
     }
 
@@ -36,35 +32,31 @@ class Signup extends Component {
         this.setState({ [name]: value });
     }
 
-    handleSubmit = async ({ event, signup }) => {
+    handleSubmit = async ({ event, signin }) => {
         event.preventDefault();
-        const res = await signup();
+        const res = await signin();
         console.log(res);
     }
     
     render() {
-        const {email, name, password} = this.state;
+        const {email, password} = this.state;
         return (
-            <Mutation mutation={SIGN_UP_USER} variables={this.state} refetchQueries={[{ query: GET_CURRENT_USER }]}>
-                {(signup, { error, loading }) => {
+            <Mutation mutation={SIGN_IN_USER} variables={this.state} refetchQueries={[{ query: GET_CURRENT_USER }]}>
+                {(signin, {loading, error}) => {
                     return (
-                        <Form onSubmit={(event) => this.handleSubmit({ event, signup })}>
-                            <h2>Sign up for an account</h2>
+                        <Form onSubmit={(event) => this.handleSubmit({ event, signin })}>
+                            <h2>Sign in now!</h2>
                             <Error error={error}/>
                             <fieldset disabled={loading} aria-busy={loading}>
                                 <label htmlFor="email">
                                     Email
                                     <input id="email" name="email" type="email" placeholder="Email" required value={email} onChange={this.handleOnChange}/>
                                 </label>
-                                <label htmlFor="name">
-                                    Name
-                                    <input id="name" name="name" type="text" placeholder="Your name" required value={name} onChange={this.handleOnChange}/>
-                                </label>
                                 <label htmlFor="password">
                                     Password
                                     <input id="password" name="password" type="password" placeholder="Password" required value={password} onChange={this.handleOnChange}/>
                                 </label>
-                                <button type="submit">Sign up</button>
+                                <button type="submit">Sign in</button>
                             </fieldset>
                         </Form>
                     );
@@ -74,4 +66,4 @@ class Signup extends Component {
     }
 }
 
-export default Signup;
+export default Signin;

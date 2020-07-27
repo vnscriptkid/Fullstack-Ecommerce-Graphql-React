@@ -24,10 +24,11 @@ const CurrentUser = (props) => {
     );
 };
 
-CurrentUser.PropTypes = {
+CurrentUser.propTypes = {
     children: PropTypes.func.isRequired
 }
 
 // <CurrentUser> (payload) => { return <div>jsx</div> } </CurrentUser>
 
 export default CurrentUser;
+export { GET_CURRENT_USER }
