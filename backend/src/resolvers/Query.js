@@ -1,4 +1,6 @@
 const { forwardTo } = require('prisma-binding');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 const Query = {
     items: forwardTo('db'),
@@ -11,15 +13,15 @@ const Query = {
         if (!userId) {
             return null;
         }
-        // user(where: UserWhereUniqueInput!): User
+
         return ctx.db.query.user(
             { 
                 where: { id: userId } 
             }, 
             info
         );
-    }   
-    
+    },
+
     // async items(parent, args, ctx, info) {
     //     const items = await ctx.db.query.items()
     //     return items;

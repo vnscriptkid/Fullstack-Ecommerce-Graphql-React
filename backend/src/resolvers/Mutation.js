@@ -61,6 +61,36 @@ const Mutation = {
         });
 
         return user;        
+    },
+
+    async signin(parent, args, ctx, info) {
+        // find user
+        const { email, password } = args;
+        const user = await ctx.db.query.user({
+            where: { email }
+        });
+
+        if (!user) {
+            throw new Error('Email does not exist');
+        }
+
+        // check password
+        const correctPassword = await bcrypt.compare(password, user.password);
+        if (!correctPassword) {
+            throw new Error('Invalid password');
+        }
+
+        // gen jwt
+        const token = jwt.sign({ userId: user.id }, process.env.APP_SECRET);
+
+        // attach cookie
+        ctx.response.cookie('token', token, {
+            httpOnly: true,
+            maxAge: 1000 * 60 * 60 * 24 * 7 // 1 week cookie
+        });
+
+        // return user
+        return user;
     }
 };
 
