@@ -2,6 +2,7 @@ import React, { Fragment } from 'react';
 import Link from 'next/link';
 import NavStyles from './styles/NavStyles';
 import CurrentUser from './CurrentUser';
+import Signout from './Signout';
 
 const Nav = (props) => {
     return (
@@ -18,6 +19,9 @@ const Nav = (props) => {
                             </Link>
                             <Link href="/orders">
                                 <a>Orders</a>
+                            </Link>
+                            <Link>
+                                <a><Signout /></a>
                             </Link>
                         </Fragment>
                     ) : (
