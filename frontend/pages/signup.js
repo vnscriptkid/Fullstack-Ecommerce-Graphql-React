@@ -2,6 +2,7 @@ import React from 'react';
 import Signup from '../components/Signup';
 import Signin from '../components/Signin';
 import styled from 'styled-components';
+import ForgotPassword from '../components/ForgotPassword';
 
 const Columns = styled.div`
     display: grid;
@@ -14,6 +15,7 @@ const SignupPage = () => {
         <Columns>
             <Signup />
             <Signin />
+            <ForgotPassword />
         </Columns>
     );
 };

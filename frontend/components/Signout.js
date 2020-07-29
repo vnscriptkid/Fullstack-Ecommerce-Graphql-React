@@ -19,7 +19,6 @@ const Signout = (props) => {
                     return <span onClick={async (e) => {
                         e.preventDefault();
                         const res = await signout();
-                        console.log(res);
                     }}>Sign out</span>
                 }
             }
