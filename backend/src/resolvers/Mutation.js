@@ -2,6 +2,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { randomBytes } = require('crypto');
 const {promisify} = require('util');
+const { transport, createResetPasswordMail } = require('../mail');
 
 function addTokenToCookie({ ctx, userId }) {
     // create jwt token
@@ -122,7 +123,13 @@ const Mutation = {
         });
         
         // send email
-        console.log('sending email...');  // TODO
+        await transport.sendMail({
+            from: 'vnscriptkid@gmail.com',
+            to: email,
+            subject: 'Reset password',
+            html: createResetPasswordMail(`${process.env.FRONTEND_URL}/reset?token=${resetToken}`)
+        });
+        
         return { message: 'Successful Request' }
     },
 
