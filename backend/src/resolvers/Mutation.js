@@ -1,5 +1,18 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const { randomBytes } = require('crypto');
+const {promisify} = require('util');
+
+function addTokenToCookie({ ctx, userId }) {
+    // create jwt token
+    const token = jwt.sign({ userId }, process.env.APP_SECRET);
+
+    // attach cookie
+    ctx.response.cookie('token', token, {
+        httpOnly: true,
+        maxAge: 1000 * 60 * 60 * 24 * 7 // 1 week cookie
+    });
+}
 
 const Mutation = {
     async createItem(parent, args, ctx, info) {
@@ -43,7 +56,7 @@ const Mutation = {
     async signup(parent, args, ctx, info) {
         args.email = args.email.toLowerCase();
 
-        const hashedPassword = await bcrypt.hash(args.password, 10);
+        const hashedPassword = await bcrypt.hash(args.password, parseInt(process.env.SALT));
 
         const user = await ctx.db.mutation.createUser({
             data: {
@@ -53,12 +66,7 @@ const Mutation = {
             }
         }, info);
 
-        const token = jwt.sign({ userId: user.id }, process.env.APP_SECRET);
-
-        ctx.response.cookie('token', token, {
-            httpOnly: true,
-            maxAge: 1000 * 60 * 60 * 24 * 7 // 1 week cookie
-        });
+        addTokenToCookie({ ctx, userId: user.id });
 
         return user;        
     },
@@ -80,14 +88,7 @@ const Mutation = {
             throw new Error('Invalid password');
         }
 
-        // gen jwt
-        const token = jwt.sign({ userId: user.id }, process.env.APP_SECRET);
-
-        // attach cookie
-        ctx.response.cookie('token', token, {
-            httpOnly: true,
-            maxAge: 1000 * 60 * 60 * 24 * 7 // 1 week cookie
-        });
+        addTokenToCookie({ ctx, userId: user.id });
 
         // return user
         return user;
@@ -96,6 +97,71 @@ const Mutation = {
     async signout(parent, args, ctx, info) {
         ctx.response.clearCookie('token');
         return { message: 'Logged out' }
+    },
+
+    async requestReset(parent, args, ctx, info) {
+        // find the email
+        const {email} = args;
+        const user = await ctx.db.query.user({
+            where: { email }
+        });
+
+        if (!user) {
+            throw new Error('Email not found');
+        }
+        
+        // create a random string, expire date
+        const randomBytesPromisified = promisify(randomBytes);
+        const resetToken = (await randomBytesPromisified(20)).toString('hex');;
+        const resetTokenExpire = Date.now() + parseFloat(process.env.RESET_TOKEN_EXPIRE_AFTER); // 1 hour
+
+        // save to the user 
+        await ctx.db.mutation.updateUser({
+            where: { email },
+            data: { resetToken, resetTokenExpire }
+        });
+        
+        // send email
+        console.log('sending email...');  // TODO
+        return { message: 'Successful Request' }
+    },
+
+    async resetPassword(parent, args, ctx, info) {
+        const { password, confirmPassword, resetToken } = args;
+
+        // check passwords
+        if (password !== confirmPassword) {
+            throw new Error('Passwords do not match');
+        }
+
+        // find user by token and within time
+        const [user] = await ctx.db.query.users({
+            where: {
+                resetToken,
+                resetTokenExpire_gte: Date.now()
+            }
+        });
+
+        if (!user) {
+            throw new Error('Invalid token');
+        }
+
+        // update password, remove resetToken
+        const hashedPassword = await bcrypt.hash(password, parseInt(process.env.SALT));
+        
+        await ctx.db.mutation.updateUser({
+            where: { email: user.email },
+            data: {
+                password: hashedPassword,
+                resetToken: null,
+                resetTokenExpire: null
+            }
+        });
+
+        addTokenToCookie({ ctx, userId: user.id });
+
+        // return user
+        return user;
     }
 };
 
