@@ -5,6 +5,7 @@ import Form from '../components/styles/Form';
 import gql from 'graphql-tag';
 import Error from './ErrorMessage';
 import Router from 'next/router';
+import SigninRequired from './SigninRequired';
 
 const CREATE_ITEM_MUTATION = gql`
     mutation CREATE_ITEM_MUTATION(
@@ -75,33 +76,35 @@ class CreateItem extends Component {
     render() {
         const {title, description, price, image} = this.state;
         return (
-            <Mutation mutation={CREATE_ITEM_MUTATION} variables={this.state}>
-                {(createItem, { loading, error }) => (
-                    <Form onSubmit={(event) => this.handleOnSubmit({ event, createItem }) }>
-                        <Error error={error}/>
-                        <fieldset disabled={loading} aria-busy={loading}>
-                            <label htmlFor="image">
-                                Image
-                                <input id="image" name="image" type="file" placeholder="Upload an image" required onChange={this.handleUpload}/>
-                                {image && <img src={image} width="200" alt="Upload Preview"/>}
-                            </label>
-                            <label htmlFor="title">
-                                Title
-                                <input id="title" name="title" type="text" placeholder="Title" required value={title} onChange={this.handleOnChange}/>
-                            </label>
-                            <label htmlFor="price">
-                                Price
-                                <input id="price" name="price" type="number" placeholder="Price" required value={price} onChange={this.handleOnChange}/>
-                            </label>
-                            <label htmlFor="description">
-                                Description
-                                <textarea id="description" name="description" placeholder="Description" required value={description} onChange={this.handleOnChange}/>
-                            </label>
-                            <button type="submit">Submit</button>
-                        </fieldset>
-                    </Form>
-                )}
-            </Mutation>
+            <SigninRequired>
+                <Mutation mutation={CREATE_ITEM_MUTATION} variables={this.state}>
+                    {(createItem, { loading, error }) => (
+                        <Form onSubmit={(event) => this.handleOnSubmit({ event, createItem }) }>
+                            <Error error={error}/>
+                            <fieldset disabled={loading} aria-busy={loading}>
+                                <label htmlFor="image">
+                                    Image
+                                    <input id="image" name="image" type="file" placeholder="Upload an image" required onChange={this.handleUpload}/>
+                                    {image && <img src={image} width="200" alt="Upload Preview"/>}
+                                </label>
+                                <label htmlFor="title">
+                                    Title
+                                    <input id="title" name="title" type="text" placeholder="Title" required value={title} onChange={this.handleOnChange}/>
+                                </label>
+                                <label htmlFor="price">
+                                    Price
+                                    <input id="price" name="price" type="number" placeholder="Price" required value={price} onChange={this.handleOnChange}/>
+                                </label>
+                                <label htmlFor="description">
+                                    Description
+                                    <textarea id="description" name="description" placeholder="Description" required value={description} onChange={this.handleOnChange}/>
+                                </label>
+                                <button type="submit">Submit</button>
+                            </fieldset>
+                        </Form>
+                    )}
+                </Mutation>
+            </SigninRequired>
         );
     }
 }

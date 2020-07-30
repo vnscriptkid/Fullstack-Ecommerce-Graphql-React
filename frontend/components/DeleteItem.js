@@ -16,11 +16,13 @@ const DELETE_SINGLE_ITEM = gql`
 const DeleteItem = ({ children, id }) => {
     
     const updateItemList = (cache, payload) => {
-        const data = cache.readQuery({ query: ALL_ITEMS_QUERY });
+        // const data = cache.readQuery({ query: ALL_ITEMS_QUERY });
+        // console.log('data: ', data);
 
-        const newData = { ...data, items: data.items.filter(({ id }) => id !== payload.data.deleteItem.id) };
+        // const newData = { ...data, items: data.items.filter(({ id }) => id !== payload.data.deleteItem.id) };
+        // console.log('newData', newData);
 
-        cache.writeQuery({ query: ALL_ITEMS_QUERY, data: newData });
+        // cache.writeQuery({ query: ALL_ITEMS_QUERY, data: newData });
     }
     
     return (
