@@ -29,11 +29,11 @@ const Pagination = ({ current }) => {
                         <Head>
                             <title>Sick Fits - Page {current} of {total}</title>
                         </Head>
-                        <Link className="prev" prefetch href={{ pathname: '/items', query: { page: current - 1 } }}>
+                        <Link prefetch href={{ pathname: '/items', query: { page: current - 1 } }}>
                             <a aria-disabled={current <= 1}>Prev</a>
                         </Link>
                         <p>Page {current} of {total}</p>
-                        <Link className="next" prefetch href={{ pathname: '/items', query: { page: current + 1 } }}>
+                        <Link prefetch href={{ pathname: '/items', query: { page: current + 1 } }}>
                             <a aria-disabled={current >= total}>Next</a>
                         </Link>
                     </PaginationStyles>
