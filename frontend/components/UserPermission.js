@@ -1,6 +1,22 @@
 import React, { Component } from 'react';
 import { allPermissions } from './Permissions';
 import PropTypes from 'prop-types';
+import { Mutation } from 'react-apollo';
+import gql from 'graphql-tag';
+
+const UPDATE_USER_PERMISSIONS = gql`
+    mutation UPDATE_USER_PERMISSIONS(
+        $userId: ID!,
+        $permissions: [Permission]!
+    ) {
+        updatePermissions(
+            userId: $userId,
+            permissions: $permissions
+        ) {
+            permissions
+        }
+    }
+`;
 
 class UserPermission extends Component {
 
@@ -28,19 +44,37 @@ class UserPermission extends Component {
         // render again
         this.setState({ userPermissionList: newPermissionList });
     }
+
+    handleUpdateClick = async ({ event, updatePermissions }) => {
+        const res = await updatePermissions();
+        console.log(res);
+    }
     
     render() {
         const {id, name, email} = this.props.user;
         return (
-            <tr>
-                <td>{name}</td>
-                <td>{email}</td>
-                {allPermissions.map((p, index) => 
-                    <td key={`${id}-${p}-${index}`}>
-                        <input value={p} type="checkbox" checked={this.state.userPermissionList.includes(p)} onChange={this.handleCheckboxChange}/>
-                    </td>
-                )}
-            </tr>
+            <Mutation mutation={UPDATE_USER_PERMISSIONS} variables={{ userId: id, permissions: this.state.userPermissionList }}>
+                {(updatePermissions, { error, loading }) => {
+                    return (
+                        <tr>
+                            <td>{name}</td>
+                            <td>{email}</td>
+                            {allPermissions.map((p, index) => 
+                                <td key={`${id}-${p}-${index}`}>
+                                    <input value={p} type="checkbox" checked={this.state.userPermissionList.includes(p)} onChange={this.handleCheckboxChange}/>
+                                </td>
+                            )}
+                            <td>
+                                <button 
+                                    disabled={loading} 
+                                    onClick={(event) => this.handleUpdateClick({ event, updatePermissions })}>
+                                    UPDATE
+                                </button>
+                            </td>
+                        </tr>
+                    );
+                }}
+            </Mutation>
         );
     }
 }

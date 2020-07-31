@@ -20,6 +20,9 @@ const Nav = (props) => {
                             <Link href="/orders">
                                 <a>Orders</a>
                             </Link>
+                            <Link href="/permissions">
+                                <a>Permissions</a>
+                            </Link>
                             <a><Signout /></a>
                         </Fragment>
                     ) : (

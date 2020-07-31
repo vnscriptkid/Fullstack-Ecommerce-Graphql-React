@@ -42,6 +42,7 @@ class Permissions extends Component {
                                         <th>Name</th>
                                         <th>Email</th>
                                         {allPermissions.map(p => <th key={p}>{p}</th>)}
+                                        <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
