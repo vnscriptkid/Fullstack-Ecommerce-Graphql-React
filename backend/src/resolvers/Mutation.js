@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const { randomBytes } = require('crypto');
 const {promisify} = require('util');
 const { transport, createResetPasswordMail } = require('../mail');
+const { hasAnyOfPermissions } = require('../utils');
 
 function addTokenToCookie({ ctx, userId }) {
     // create jwt token
@@ -178,6 +179,30 @@ const Mutation = {
 
         // return user
         return user;
+    },
+
+    async updatePermissions(parent, args, ctx, info) {
+        const { userId: userIdToUpdate, permissions } = args;
+        const { userId: currentUserId, user } = ctx.request;
+
+        if (!currentUserId) {
+            throw new Error('You must be logged in');
+        }
+
+        hasAnyOfPermissions(user, ['ADMIN', 'PERMISSIONUPDATE'])
+
+        // update
+        return ctx.db.mutation.updateUser(
+            {
+                where: { id: userIdToUpdate },
+                data: {
+                    permissions: {
+                        set: permissions
+                    }
+                }
+            },
+            info
+        );
     }
 };
 

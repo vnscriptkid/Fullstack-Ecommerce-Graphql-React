@@ -20,7 +20,8 @@ type Mutation {
     signin(email: String!, password: String!): User,
     signout: SuccessMessage,
     requestReset(email: String!): SuccessMessage,
-    resetPassword(password: String!, confirmPassword: String!, resetToken: String!): User
+    resetPassword(password: String!, confirmPassword: String!, resetToken: String!): User,
+    updatePermissions(userId: ID!, permissions: [Permission]!): User
 }
 
 type User {
