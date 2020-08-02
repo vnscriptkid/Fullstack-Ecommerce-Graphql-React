@@ -6,6 +6,7 @@ import PriceTag from './styles/PriceTag';
 import Link from 'next/link';
 import formatMoney from '../lib/formatMoney';
 import DeleteItem from '../components/DeleteItem'
+import AddToCart from './AddToCart'
 
 class Item extends Component {
     static propTypes = {
@@ -27,7 +28,7 @@ class Item extends Component {
                     <Link href={{ pathname: 'update', query: { id: item.id } }}>
                         <a>Edit</a>
                     </Link>
-                    <button>Add to Cart</button>
+                    <AddToCart id={item.id}/>
                     <DeleteItem id={item.id}>Delete</DeleteItem>
                 </div>
             </ItemStyles>
