@@ -4,6 +4,7 @@ const { randomBytes } = require('crypto');
 const {promisify} = require('util');
 const { transport, createResetPasswordMail } = require('../mail');
 const { hasAnyOfPermissions } = require('../utils');
+const db = require('../db');
 
 function addTokenToCookie({ ctx, userId }) {
     // create jwt token
@@ -215,6 +216,37 @@ const Mutation = {
             },
             info
         );
+    },
+
+    async addToCart(parent, args, ctx, info) {
+        // check if user is signed in
+        const { userId, user } = ctx.request;
+        if (!userId) {
+            throw new Error('You must be logged in first');
+        }
+        // find cartItem 
+        const [existingCartItem] = await ctx.db.query.cartItems({
+            where: {
+                user: { id: userId },
+                item: { id: args.itemId }
+            }
+        });
+              
+        // check if the new item is in cart
+        if (existingCartItem) {
+            // increase quantity by one
+            return ctx.db.mutation.updateCartItem({
+                where: { id: existingCartItem.id },
+                data: { quantity: existingCartItem.quantity + 1 }
+            });
+        } 
+        // add new
+        return ctx.db.mutation.createCartItem({
+            data: {
+                user: { connect: { id: userId } },
+                item: { connect: { id: args.itemId } }
+            }
+        });
     }
 };
 
