@@ -220,7 +220,7 @@ const Mutation = {
 
     async addToCart(parent, args, ctx, info) {
         // check if user is signed in
-        const { userId, user } = ctx.request;
+        const { userId } = ctx.request;
         if (!userId) {
             throw new Error('You must be logged in first');
         }
@@ -246,7 +246,33 @@ const Mutation = {
                 user: { connect: { id: userId } },
                 item: { connect: { id: args.itemId } }
             }
+        }, info);
+    },
+
+    async removeFromCart(parent, args, ctx, info) {
+        // make sure logged in
+        const { userId } = ctx.request;
+        const { cartItemId } = args;
+        if (!userId) {
+            throw new Error('You must be logged in first');
+        }
+
+        // check if current user owns the cart item
+        const [foundCartItem] = await ctx.db.query.cartItems({
+            where: {
+                user: { id: userId },
+                id: cartItemId
+            }
         });
+
+        if (!foundCartItem) {
+            throw new Error('You do not own this cart item');
+        }
+
+        // delete cart item by id
+        return ctx.db.mutation.deleteCartItem({
+            where: { id: cartItemId }
+        }, info);
     }
 };
 

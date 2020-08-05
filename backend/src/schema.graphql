@@ -23,6 +23,7 @@ type Mutation {
     resetPassword(password: String!, confirmPassword: String!, resetToken: String!): User,
     updatePermissions(userId: ID!, permissions: [Permission]!): User
     addToCart(itemId: ID!): CartItem
+    removeFromCart(cartItemId: ID!): CartItem
 }
 
 type User {
