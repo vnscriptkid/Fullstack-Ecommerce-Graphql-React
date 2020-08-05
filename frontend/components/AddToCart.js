@@ -22,15 +22,18 @@ class AddToCart extends Component {
     }
 
     handleAddToCart = async (addToCart) => {
-        const res = await addToCart();
-        console.log(res);
+        try {
+            await addToCart();
+        } catch (err) {
+            alert(err.message);
+        }
     } 
     
     render() {
         return (
             <Mutation mutation={ADD_TO_CART} variables={{ itemId: this.props.id }} refetchQueries={[{ query: GET_CURRENT_USER }]}>
-                {(addToCart) => (
-                    <button onClick={() => this.handleAddToCart(addToCart)}>Add To Cart</button>
+                {(addToCart, {loading}) => (
+                    <button disabled={loading} onClick={() => this.handleAddToCart(addToCart)}>Add To Cart</button>
                 )}
             </Mutation>
         );

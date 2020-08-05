@@ -2,6 +2,22 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import formatMoney from '../lib/formatMoney';
+import {Mutation} from 'react-apollo';
+import gql from 'graphql-tag';
+import { GET_CURRENT_USER } from './CurrentUser';
+import RemoveCartItem from './RemoveCartItem';
+
+const REMOVE_CART_ITEM = gql`
+    mutation REMOVE_CART_ITEM(
+        $cartItemId: ID!
+    ) {
+        removeFromCart(
+            cartItemId: $cartItemId
+        ) {
+            id
+        }
+    }
+`;
 
 const CartItemStyles = styled.li`
     padding: 1rem 0;
@@ -18,7 +34,7 @@ const CartItemStyles = styled.li`
     }
 `;
 
-const CartItem = ({ cartItem: { item, quantity } }) => {
+const CartItem = ({ cartItem: { item, quantity, id } }) => {
     return (
         <CartItemStyles>
             <img width="100" src={item.image} alt={item.image}/>
@@ -31,6 +47,7 @@ const CartItem = ({ cartItem: { item, quantity } }) => {
                     {' each'}
                 </p>
             </div>
+            <RemoveCartItem cartItemId={id}/>
         </CartItemStyles>
     );
 };
