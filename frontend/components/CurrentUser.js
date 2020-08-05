@@ -9,7 +9,17 @@ const GET_CURRENT_USER = gql`
             id,
             name,
             email,
-            permissions
+            permissions,
+            cart {
+                id,
+                quantity,
+                item {
+                    id,
+                    image,
+                    price,
+                    title
+                }
+            }
         }
     }
 `;
