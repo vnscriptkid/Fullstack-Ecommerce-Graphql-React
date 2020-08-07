@@ -5,11 +5,12 @@ import CurrentUser from './CurrentUser';
 import Signout from './Signout';
 import {Mutation} from 'react-apollo';
 import { TOGGLE_CART_OPEN_STATE } from './Cart';
+import CartCount from './CartCount';
 
 const Nav = (props) => {
     return (
         <CurrentUser>
-            {({ data: { me } }) => (
+            {({ data: { me } = {} }) => (
                 <NavStyles>
                     <Link href="/items">
                         <a>Shop</a>
@@ -26,15 +27,18 @@ const Nav = (props) => {
                                 <a>Permissions</a>
                             </Link>
                             <a><Signout /></a>
+                            <Mutation mutation={TOGGLE_CART_OPEN_STATE}>
+                                {(toggleCart) => <button onClick={toggleCart}>
+                                    Cart
+                                    <CartCount count={me.cart.reduce((prev, cur) => prev + cur.quantity, 0)}/>
+                                </button>}
+                            </Mutation>
                         </Fragment>
                     ) : (
                         <Link href="/signup">
                             <a>Signup</a>
                         </Link>
                     )}
-                    <Mutation mutation={TOGGLE_CART_OPEN_STATE}>
-                        {(toggleCart) => <a onClick={toggleCart}>Cart</a>}
-                    </Mutation>
                     
                 </NavStyles>
             )}

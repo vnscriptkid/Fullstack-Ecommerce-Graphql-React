@@ -25,8 +25,8 @@ const TOGGLE_CART_OPEN_STATE = gql`
 const Cart = () => {
     return (
         <Query query={GET_CURRENT_USER}>
-            {({ data: { me }, error, loading }) => {
-                // if (!me) return null;
+            {({ data: { me } = {}, error, loading }) => {
+                if (!me) return null;
                 return (
                     <Mutation mutation={TOGGLE_CART_OPEN_STATE}>
                         {(toggleCart) => (
