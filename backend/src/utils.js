@@ -1,5 +1,10 @@
 function hasAnyOfPermissions(user, neededPermissions) {
-    // users.permissions['c', 'd'], ['a', 'b']
+    const includedPermissions = user.permissions.filter(permission => neededPermissions.includes(permission));
+
+    return includedPermissions.length;
+}
+
+function hasAnyOfPermissionsThrowError(user, neededPermissions) {
     const includedPermissions = user.permissions.filter(permission => neededPermissions.includes(permission));
 
     if (includedPermissions.length === 0) {
@@ -9,6 +14,7 @@ function hasAnyOfPermissions(user, neededPermissions) {
         `);
     }
 }
+
 
 function calcTotalPrice(cart) {
     return cart.reduce((tally, cartItem) => {

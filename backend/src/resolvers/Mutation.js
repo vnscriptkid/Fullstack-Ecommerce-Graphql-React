@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 const { randomBytes } = require('crypto');
 const {promisify} = require('util');
 const { transport, createResetPasswordMail } = require('../mail');
-const { hasAnyOfPermissions, calcTotalPrice } = require('../utils');
+const { hasAnyOfPermissionsThrowError, calcTotalPrice } = require('../utils');
 const db = require('../db');
 const stripe = require('../stripe');
 
@@ -67,7 +67,7 @@ const Mutation = {
 
         // check if item belongs to current user
         const ownItem = item.user.id === ctx.request.userId;
-        hasAnyOfPermissions(currentUser, ['ADMIN', 'ITEMDELETE'])
+        hasAnyOfPermissionsThrowError(currentUser, ['ADMIN', 'ITEMDELETE'])
         const hasNeededPermission = true;
         const canDelete = ownItem || hasNeededPermission;
         if (!canDelete) {
@@ -203,7 +203,7 @@ const Mutation = {
             throw new Error('You must be logged in');
         }
 
-        hasAnyOfPermissions(user, ['ADMIN', 'PERMISSIONUPDATE'])
+        hasAnyOfPermissionsThrowError(user, ['ADMIN', 'PERMISSIONUPDATE'])
 
         // update
         return ctx.db.mutation.updateUser(
