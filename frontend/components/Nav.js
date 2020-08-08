@@ -6,6 +6,7 @@ import Signout from './Signout';
 import {Mutation} from 'react-apollo';
 import { TOGGLE_CART_OPEN_STATE } from './Cart';
 import CartCount from './CartCount';
+import totalCartItems from '../lib/totalCartItems';
 
 const Nav = (props) => {
     return (
@@ -30,7 +31,7 @@ const Nav = (props) => {
                             <Mutation mutation={TOGGLE_CART_OPEN_STATE}>
                                 {(toggleCart) => <button onClick={toggleCart}>
                                     Cart
-                                    <CartCount count={me.cart.reduce((prev, cur) => prev + cur.quantity, 0)}/>
+                                    <CartCount count={totalCartItems(me.cart)}/>
                                 </button>}
                             </Mutation>
                         </Fragment>

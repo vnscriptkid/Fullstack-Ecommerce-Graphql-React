@@ -10,6 +10,7 @@ import CartItem from './CartItem';
 import calcTotalPrice from '../lib/calcTotalPrice';
 import formatMoney from '../lib/formatMoney';
 import {adopt} from 'react-adopt';
+import TakeMoney from './TakeMoney';
 
 const GET_CART_OPEN_STATE = gql`
     query {
@@ -50,7 +51,12 @@ const Cart = () => {
 
                         <footer>
                             <p>{ formatMoney(calcTotalPrice(me.cart))} </p>
-                            <SickButton>Checkout</SickButton>
+
+                            {!!me.cart.length && (
+                                <TakeMoney>
+                                    <SickButton>Checkout</SickButton>
+                                </TakeMoney>
+                            )}
                         </footer>
                     </CartStyles>
                 );
